@@ -6,4 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-flash_cards = {path = "../my-flash-cards"}
+clap = { version = "4.3.21", features = ["derive", "wrap_help"] }
+flash_cards = {path = "../flash-cards"}
