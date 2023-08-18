@@ -1,0 +1,12 @@
+Card {{ side }}:
+{{ text }}
+
+Count {{ seen }}/{{ total }}
+
+{% if seen > 0 %}
+(n)ext (p)revious (f)lip (h)int (s)huffle (r)estart (q)uit
+{% else %}
+(n)ext (f)lip (h)int (s)huffle (r)estart (q)uit
+{%endif%}
+
+user input: 

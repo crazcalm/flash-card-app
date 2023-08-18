@@ -14,3 +14,17 @@ pub fn helloworld(name: &str) -> String {
  // then render it.
     hello.render().unwrap()
 }
+
+#[derive(Template)] // this will generate the code...
+#[template(path = "flash_card.txt")] // using the template in this path, relative
+struct FlashCardTemplate<'a> {
+    side: &'a str,
+    text: &'a str,
+    seen: usize,
+    total: usize,
+}
+
+pub fn flashcard(side: &str, text: &str, seen: usize, total: usize) -> String {
+    let flashcard_template = FlashCardTemplate { side, text, seen, total }; 
+    flashcard_template.render().unwrap()
+}

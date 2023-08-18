@@ -1,6 +1,6 @@
 use flash_cards::enums::FlashCardState;
 use flash_cards::traits::FlipFlashCard;
-use flash_cards::Card;
+use flash_cards::{Card, FlashCard};
 
 mod cli;
 mod ui;
@@ -18,4 +18,9 @@ fn main() {
     card.set_state(FlashCardState::Hint);
     println!("{}", card);
     println!("{}", cards);
+
+    println!(
+        "{}",
+        ui::flashcard("front", card.get_front().as_str(), 1, cards.deck_size())
+    );
 }
