@@ -9,4 +9,3 @@ Count {{ seen }}/{{ total }}
 (n)ext (f)lip (h)int (s)huffle (r)estart (q)uit
 {%endif%}
 
-user input: 

@@ -11,7 +11,7 @@ struct HelloTemplate<'a> {
 
 pub fn helloworld(name: &str) -> String {
     let hello = HelloTemplate { name }; // instantiate your struct
- // then render it.
+                                        // then render it.
     hello.render().unwrap()
 }
 
@@ -25,6 +25,11 @@ struct FlashCardTemplate<'a> {
 }
 
 pub fn flashcard(side: &str, text: &str, seen: usize, total: usize) -> String {
-    let flashcard_template = FlashCardTemplate { side, text, seen, total }; 
+    let flashcard_template = FlashCardTemplate {
+        side,
+        text,
+        seen,
+        total,
+    };
     flashcard_template.render().unwrap()
 }
