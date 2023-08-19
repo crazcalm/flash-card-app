@@ -3,9 +3,22 @@ Card {{ side }}:
 
 Count {{ seen }}/{{ total }}
 
-{% if seen > 0 %}
+{% if has_previous && has_next && has_hint %}
 (n)ext (p)revious (f)lip (h)int (s)huffle (r)estart (q)uit
-{% else %}
-(n)ext (f)lip (h)int (s)huffle (r)estart (q)uit
-{%endif%}
 
+{% else if has_previous && has_next %}
+(n)ext (p)revious (f)lip (s)huffle (r)estart (q)uit
+
+{% else if has_next && has_hint %}
+(n)ext (f)lip (h)int (s)huffle (r)estart (q)uit
+
+{% else if has_next %} 
+(n)ext (f)lip (s)huffle (r)estart (q)uit
+
+{% else if has_previous && has_hint %}
+(p)revious (f)lip (h)int (s)huffle (r)estart (q)uit
+
+{% else if has_previous %}
+(p)revious (f)lip (s)huffle (r)estart (q)uit
+
+{%endif%}

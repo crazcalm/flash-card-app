@@ -11,7 +11,6 @@ use command::{parse_command, Command};
 
 fn main() {
     let mut cards = cli::setup();
-    println!("{}", ui::helloworld("Marcus"));
 
     if cards.deck_size() == 0 {
         // Early exit (will replace later)
@@ -25,7 +24,15 @@ fn main() {
 
     print!(
         "{}",
-        ui::flashcard("front", card.get_front().as_str(), 1, cards.deck_size())
+        ui::flashcard(
+            "front",
+            card.get_front().as_str(),
+            1,
+            cards.deck_size(),
+            true,
+            false,
+            false
+        )
     );
 
     let mut command = Command::Unknown;
