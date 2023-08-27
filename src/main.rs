@@ -1,6 +1,7 @@
-use flash_cards::enums::FlashCardState;
-use flash_cards::traits::FlipFlashCard;
-use flash_cards::{Card, FlashCard};
+use std::cell::RefCell;
+use std::rc::Rc;
+
+use flash_cards::{Card, FlashCard, FlipFlashCard};
 
 mod cli;
 mod command;
@@ -10,42 +11,94 @@ mod ui;
 use command::{parse_command, Command};
 
 fn main() {
-    let mut cards = cli::setup();
+    let mut card_manager = cli::setup();
 
-    if cards.deck_size() == 0 {
-        // Early exit (will replace later)
+    let card_weak_ref = card_manager.next_card();
+    if card_weak_ref.is_none() {
+        println!("No cards were loaded");
         return;
     }
 
-    let mut card: Card = cards.draw().unwrap();
-    card.set_state(FlashCardState::Hint);
-    println!("{}", card);
-    println!("{}", cards);
-
-    print!(
-        "{}",
-        ui::flashcard(
-            "front",
-            card.get_front().as_str(),
-            1,
-            cards.deck_size(),
-            true,
-            false,
-            false
-        )
-    );
+    let total_cards = card_manager.num_of_cards_in_deck() + card_manager.num_of_cards_seen();
 
     let mut command = Command::Unknown;
     while command != Command::Quit {
+        // Clearing the screen
+        let _ = clearscreen::clear();
+
+        let card_ref: Rc<RefCell<Card>> = card_manager.current_card().unwrap().upgrade().unwrap();
+        let card = card_ref.borrow_mut();
+        let has_next = card_manager.num_of_cards_in_deck() != 0;
+        let has_previous = card_manager.num_of_cards_seen() > 1;
+        let has_hint = card.get_hint().is_some();
+
+        print!(
+            "\n{}",
+            ui::flashcard(
+                card.get_state().to_string().as_str(),
+                card.to_string().as_str(),
+                card_manager.num_of_cards_seen(),
+                total_cards,
+                has_next,
+                has_previous,
+                has_hint,
+            )
+        );
+
+        // Dropping so that I can borrow it again later in the different context.
+        drop(card);
+
         // Testing out
         let stdin = std::io::stdin();
         let handle = stdin.lock();
         let user_input = input::get_command(handle).unwrap();
 
         command = parse_command(&user_input, true, true, true);
+        match command {
+            Command::Unknown => println!("Not a valid command"),
+            Command::Next => match has_next {
+                true => {
+                    let _ = card_manager.next_card().unwrap();
+                    card_manager.reset_current_card_state();
+                }
+                false => {}
+            },
+            Command::Previous => match has_previous {
+                true => {
+                    let _ = card_manager.previous_card().unwrap();
+                    card_manager.reset_current_card_state();
+                }
+                false => {}
+            },
+            Command::Flip => {
+                card_manager.flip_current_card();
+            }
+            Command::Hint => match has_hint {
+                true => {
+                    card_manager.try_to_flip_current_card_to_hint();
+                }
+                false => {}
+            },
+            Command::Shuffle => {
+                match has_next {
+                    true => {
+                        // Include the currently shown card in the shuffle
+                        card_manager.previous_card();
+                        card_manager.shuffle();
 
-        println!("command: {:?}", command);
+                        // set new shown card
+                        let _ = card_manager.next_card().unwrap();
+                    }
+                    false => {}
+                }
+            }
+            Command::Restart => {
+                card_manager.add_previous_cards_to_deck();
+
+                // Ensuring that there is a current card
+                let _ = card_manager.next_card();
+            }
+            Command::Quit => {}
+        }
     }
-
-    println!("You have exited");
 }

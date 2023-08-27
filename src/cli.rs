@@ -4,8 +4,8 @@ use std::path::PathBuf;
 use clap::{Parser, Subcommand};
 
 use flash_cards::loader::Csv;
-use flash_cards::traits::{FlashCard, FlashCards, Loader};
-use flash_cards::Cards;
+use flash_cards::traits::{FlashCard, FlashCards, FlashCardsManager, FlipFlashCard, Loader};
+use flash_cards::{Cards, CardsManager};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -32,9 +32,9 @@ pub enum Commands {
     },
 }
 
-pub fn setup<T>() -> Box<dyn FlashCards<T>>
+pub fn setup<T>() -> Box<dyn FlashCardsManager<T>>
 where
-    T: for<'de> FlashCard<'de> + 'static,
+    T: for<'de> FlashCard<'de> + 'static + FlipFlashCard,
 {
     let cli_app = Cli::parse();
     let mut cards = Cards::new();
@@ -51,5 +51,5 @@ where
         None => {}
     }
 
-    Box::new(cards)
+    Box::new(CardsManager::create_from_deck(cards))
 }

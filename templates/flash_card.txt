@@ -10,7 +10,7 @@ Count {{ seen }}/{{ total }}
 (n)ext (p)revious (f)lip (s)huffle (r)estart (q)uit
 
 {% else if has_next && has_hint %}
-(n)ext (f)lip (h)int (s)huffle (r)estart (q)uit
+(n)ext (f)lip (h)int (r)estart (q)uit
 
 {% else if has_next %} 
 (n)ext (f)lip (s)huffle (r)estart (q)uit
