@@ -32,6 +32,20 @@ fn main() {
         let has_previous = card_manager.num_of_cards_seen() > 1;
         let has_hint = card.get_hint().is_some();
 
+        let commands = ui::get_availiable_commands(&card, &card_manager);
+
+        println!(
+            "\n{}",
+            ui::flashcard_v2(
+                card.get_state().to_string().as_str(),
+                card.to_string().as_str(),
+                card_manager.num_of_cards_seen(),
+                total_cards,
+                commands.as_str(),
+            )
+        );
+
+        /*
         print!(
             "\n{}",
             ui::flashcard(
@@ -44,7 +58,7 @@ fn main() {
                 has_hint,
             )
         );
-
+        */ 
         // Dropping so that I can borrow it again later in the different context.
         drop(card);
 

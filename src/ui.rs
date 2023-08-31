@@ -1,4 +1,5 @@
-use askama::Template; // bring trait in scope
+use askama::Template;
+use flash_cards::{Card, CardsManager, traits::FlashCardsManager, FlashCard, FlipFlashCard, enums::FlashCardState};
 
 #[derive(Template)] // this will generate the code...
 #[template(path = "flash_card.txt")] // using the template in this path, relative
@@ -31,6 +32,73 @@ pub fn flashcard(
         has_hint,
     };
     flashcard_template.render().unwrap()
+}
+
+#[derive(Template)] // this will generate the code...
+#[template(path = "flash_card_v2.txt")] // using the template in this path, relative
+struct FlashCardTemplateV2<'a> {
+    side: &'a str,
+    text: &'a str,
+    seen: usize,
+    total: usize,
+    commands: &'a str,
+}
+
+pub fn flashcard_v2(
+    side: &str,
+    text: &str,
+    seen: usize,
+    total: usize,
+    commands: &str,
+) -> String {
+    let flashcard_template = FlashCardTemplateV2 {
+        side,
+        text,
+        seen,
+        total,
+        commands,
+    };
+    flashcard_template.render().unwrap()
+}
+
+
+pub fn get_availiable_commands(card: &Card, card_manager: &Box<dyn FlashCardsManager<Card>>) -> String {
+    let mut command_list = vec![];
+
+    if card_manager.num_of_cards_in_deck() > 0 {
+        command_list.push("(n)ext");
+    }
+
+    if card_manager.num_of_cards_seen() > 1 {
+        command_list.push("(p)revious");
+    }
+
+    // Add flip now to appease my wanted order
+    command_list.push("(f)lip");
+
+    match card.get_hint() {
+        Some(_hint) => {
+            if card.get_state() != &FlashCardState::Hint {
+                command_list.push("(h)int");
+            }
+        },
+        None => {},
+    }
+
+    // Should not be able to shuffle when you are looking at the last card
+    if card_manager.num_of_cards_in_deck() > 0 {
+        command_list.push("(s)huffle");
+    }
+
+    // Can only restart after reaching card number 2
+    if card_manager.num_of_cards_seen() > 1 {
+        command_list.push("(r)estart");
+    }
+
+    // Quit
+    command_list.push("(q)uit");
+
+    command_list.join(" ")
 }
 
 #[cfg(test)]
