@@ -45,20 +45,6 @@ fn main() {
             )
         );
 
-        /*
-        print!(
-            "\n{}",
-            ui::flashcard(
-                card.get_state().to_string().as_str(),
-                card.to_string().as_str(),
-                card_manager.num_of_cards_seen(),
-                total_cards,
-                has_next,
-                has_previous,
-                has_hint,
-            )
-        );
-        */ 
         // Dropping so that I can borrow it again later in the different context.
         drop(card);
 

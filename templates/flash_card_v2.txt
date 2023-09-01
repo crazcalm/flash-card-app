@@ -1,7 +1,0 @@
-Card {{ side }}:
-{{ text }}
-
-Count {{ seen }}/{{ total }}
-
-{{ commands }}
-
