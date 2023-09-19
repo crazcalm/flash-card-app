@@ -1,6 +1,6 @@
 use askama::Template;
 use flash_cards::{
-    enums::FlashCardState, traits::FlashCardsManager, Card, CardsManager, FlashCard, FlipFlashCard,
+    enums::FlashCardState, traits::FlashCardsManager, Card, FlashCard, FlipFlashCard,
 };
 
 #[derive(Template)] // this will generate the code...

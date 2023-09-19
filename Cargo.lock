@@ -270,6 +270,7 @@ dependencies = [
 [[package]]
 name = "flash_cards"
 version = "0.1.0"
+source = "git+https://github.com/crazcalm/my-flash-cards.git#ffc959aacaf3835be707502ab7268ef69f7daee7"
 dependencies = [
  "csv",
  "rand",
