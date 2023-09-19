@@ -41,15 +41,12 @@ pub fn get_availiable_commands(
     // Add flip now to appease my wanted order
     command_list.push("(f)lip");
 
-    match card.get_hint() {
-        Some(_hint) => {
-            if card.get_state() != &FlashCardState::Hint {
-                command_list.push("(h)int");
-            }
+    if let Some(_hint) = card.get_hint() {
+        if card.get_state() != &FlashCardState::Hint {
+            command_list.push("(h)int");
         }
-        None => {}
     }
-
+   
     // Should not be able to shuffle when you are looking at the last card
     if card_manager.num_of_cards_in_deck() > 0 {
         command_list.push("(s)huffle");
